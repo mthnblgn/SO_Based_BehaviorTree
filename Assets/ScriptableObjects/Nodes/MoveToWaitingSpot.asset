@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 887b197fd67645942b661abd032a894c, type: 3}
-  m_Name: OccupyAssignedSpot
+  m_Script: {fileID: 11500000, guid: af83ed245a1794348aed5cc02f624610, type: 3}
+  m_Name: MoveToWaitingSpot
   m_EditorClassIdentifier: 
   currentState: 0
   description: 
+  arrivalThreshold: 0.25

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
 public class AreaController : MonoBehaviour
@@ -19,6 +20,9 @@ public class AreaController : MonoBehaviour
     [Header("Queue Flow Control")]
     [Tooltip("Minimum delay between consecutive NPCs leaving the queue (seconds)")]
     [SerializeField] private float queueCooldown = 0.4f;
+    [Header("Queue Limit")]
+    [Tooltip("Maximum number of NPCs allowed in the queue. 0 = unlimited.")]
+    [SerializeField] private int queueLimit = 15;
     private float nextReleaseTime = 0f;
 
     [Header("Exit Setup")]
@@ -37,7 +41,7 @@ public class AreaController : MonoBehaviour
 
         int count = waitingSpotList.Count;
         if (count == 0) return null;
-
+        if (AnyAvailableSpot() == false) return null;
         int start = Random.Range(0, count);
         for (int i = 0; i < count; i++)
         {
@@ -51,6 +55,15 @@ public class AreaController : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public bool AnyAvailableSpot()
+    {
+        foreach (var spot in waitingSpotList)
+        {
+            if (spot != null && spot.IsAvailable()) return true;
+        }
+        return false;
     }
 
     // Queue management
@@ -158,6 +171,7 @@ public class AreaController : MonoBehaviour
         if (npc == null) return false;
         int idx = GetQueuePosition(npc);
         if (idx < 0) return false;
+        CleanupQueue();
         position = GetQueueWorldPosition(idx);
         return true;
     }
@@ -191,5 +205,11 @@ public class AreaController : MonoBehaviour
             if (spot != null)
                 waitingSpotList.Add(spot);
         }
+    }
+    public bool IsQueueFull()
+    {
+        if (queueLimit <= 0) return false; // Unlimited
+        CleanupQueue();
+        return npcQueue.Count >= queueLimit;
     }
 }

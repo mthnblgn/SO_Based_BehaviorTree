@@ -25,7 +25,7 @@ public class MoveToQueuePosition : NPCActionNode
             return NodeState.FAILURE;
 
         // If at the front, proceed to the next node
-        if (area.IsFirst(controller) && controller.HasArrived(agent, arrivalThreshold))
+        if (area.AnyAvailableSpot() && area.IsFirst(controller) && controller.HasArrived(agent, arrivalThreshold))
         {
             area.DequeueIfFirst(controller); // Remove from queue when progressing successfully
             return NodeState.SUCCESS;

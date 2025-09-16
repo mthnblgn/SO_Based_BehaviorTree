@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 991841987831791770, guid: 05af0a7e67d22124093a3fb853d2472f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 991841987831791770, guid: 05af0a7e67d22124093a3fb853d2472f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -64,6 +64,10 @@ PrefabInstance:
       propertyPath: tree
       value: 
       objectReference: {fileID: 11400000, guid: b181ca428c4154b42b208bf97f595def, type: 2}
+    - target: {fileID: 6447990459740087908, guid: 05af0a7e67d22124093a3fb853d2472f, type: 3}
+      propertyPath: m_AgentTypeID
+      value: -334000983
+      objectReference: {fileID: 0}
     - target: {fileID: 7597979930891367193, guid: 05af0a7e67d22124093a3fb853d2472f, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 

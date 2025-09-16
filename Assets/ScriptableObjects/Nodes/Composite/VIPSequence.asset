@@ -15,7 +15,8 @@ MonoBehaviour:
   currentState: 1
   description: 
   children:
-  - {fileID: 11400000, guid: ce696cfd2cd4c2540a6d29e2d42cba0b, type: 2}
+  - {fileID: 11400000, guid: 9c533be7d624bbb429b3c557cdcc1edb, type: 2}
+  - {fileID: 11400000, guid: c8103bc1627d6114584ee7ca45f8d940, type: 2}
   - {fileID: 11400000, guid: 2eec8285130463c4b9244aa968ed8e9e, type: 2}
   - {fileID: 11400000, guid: 7d12dd7ad2bf2fe4caae2ad473d78f8b, type: 2}
   - {fileID: 11400000, guid: d2cee8146a67d144c924a34054bee3b5, type: 2}

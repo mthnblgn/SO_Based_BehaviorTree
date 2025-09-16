@@ -11,6 +11,8 @@ public class NPCSpawner : MonoBehaviour
     [SerializeField] private List<Transform> spawnPoints = new List<Transform>();
     [SerializeField] private int initialPoolSize = 3;
     [SerializeField] private bool spawnAtQueue = true;
+    [SerializeField] private float spawnTime = 1f;
+    private float timer = 0f;
 
     private readonly List<ObjectPool<NPCController>> pools = new List<ObjectPool<NPCController>>();
 
@@ -27,6 +29,15 @@ public class NPCSpawner : MonoBehaviour
                     pools.Add(new ObjectPool<NPCController>(prefab, initialPoolSize, transform));
                 }
             }
+        }
+    }
+    void Update()
+    {
+        timer += Time.deltaTime;
+        if(area.IsQueueFull() == false && timer >= spawnTime)
+        {
+            Spawn();
+            timer = 0f;
         }
     }
 
@@ -53,6 +64,37 @@ public class NPCSpawner : MonoBehaviour
             npc.transform.position = GetSpawnPosition();
             npc.transform.rotation = Quaternion.identity;
             // Ensure not double-enqueued; QueueForWaitingSpot will enqueue later
+        }
+
+        // After placing, ensure NavMeshAgent is valid and on navmesh
+        var nav = npc.GetComponent<UnityEngine.AI.NavMeshAgent>();
+        if (nav != null)
+        {
+            // Keep disabled during pooling; enable if we can snap to navmesh
+            if (!nav.enabled)
+            {
+                // Try to snap and enable via controller helper
+                npc.EnsureNavAgentOnNavMesh(5f);
+            }
+            else if (!nav.isOnNavMesh)
+            {
+                // If enabled but off-mesh, try to sample and warp
+                if (UnityEngine.AI.NavMesh.SamplePosition(npc.transform.position, out var hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
+                {
+                    nav.Warp(hit.position);
+                }
+                else
+                {
+                    // As a last resort, disable to avoid API spam; it will be re-enabled when needed
+                    nav.enabled = false;
+                }
+            }
+        }
+        // Re-enable BT runner after we ensured agent placement is valid
+        var runner = npc.GetComponent<BehaviorTreeRunner>();
+        if (runner != null)
+        {
+            runner.enabled = true;
         }
         return npc;
     }

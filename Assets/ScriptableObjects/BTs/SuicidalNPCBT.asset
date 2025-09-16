@@ -9,11 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a174f6faaa12da4aa567fc469aaa631, type: 3}
-  m_Name: VIPSelector
+  m_Script: {fileID: 11500000, guid: f28bf510c3f43d249a0ae3a311f557c8, type: 3}
+  m_Name: SuicidalNPCBT
   m_EditorClassIdentifier: 
-  currentState: 0
-  description: 
-  children:
-  - {fileID: 11400000, guid: 7d9e2a2d8e958e045b2d12a9a496c751, type: 2}
-  - {fileID: 11400000, guid: d7165c41c7bb7ca4895dd676dad0f9e1, type: 2}
+  rootNode: {fileID: 11400000, guid: fadda55ab77739549b4d1456eacfd228, type: 2}

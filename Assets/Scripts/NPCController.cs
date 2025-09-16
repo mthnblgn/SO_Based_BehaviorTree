@@ -18,9 +18,41 @@ public class NPCController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
 
+    /// <summary>
+    /// Ensure NavMeshAgent is enabled and its transform is close enough to a NavMesh. If off-mesh,
+    /// try to snap the transform onto the nearest NavMesh within maxDistance, then enable the agent.
+    /// </summary>
+    public bool EnsureNavAgentOnNavMesh(float maxDistance = 2f)
+    {
+        if (navMeshAgent == null) return false;
+        if (navMeshAgent.enabled && navMeshAgent.isOnNavMesh) return true;
+
+        // Try to snap transform first, then enable
+        if (UnityEngine.AI.NavMesh.SamplePosition(transform.position, out var hit, maxDistance, UnityEngine.AI.NavMesh.AllAreas))
+        {
+            transform.position = hit.position;
+            // Now try enabling
+            navMeshAgent.enabled = true;
+            return navMeshAgent.isOnNavMesh;
+        }
+
+        return false;
+    }
+
     public void SetTargetPosition(Vector3 position)
     {
         targetPosition = position;
+        if (navMeshAgent == null) return;
+
+        // Make sure agent is valid before calling SetDestination
+        if (!navMeshAgent.enabled || !navMeshAgent.isOnNavMesh)
+        {
+            if (!EnsureNavAgentOnNavMesh(3f))
+            {
+                // Can't set destination right now
+                return;
+            }
+        }
         navMeshAgent.SetDestination(targetPosition);
     }
 
@@ -46,8 +78,19 @@ public class NPCController : MonoBehaviour
             // Stop movement and return to pool
             if (navMeshAgent != null)
             {
-                navMeshAgent.ResetPath();
-                navMeshAgent.velocity = Vector3.zero;
+                if (navMeshAgent.enabled && navMeshAgent.isOnNavMesh)
+                {
+                    navMeshAgent.ResetPath();
+                    navMeshAgent.velocity = Vector3.zero;
+                }
+                // Disable while pooled to avoid off-mesh enable errors
+                navMeshAgent.enabled = false;
+            }
+            // Also disable BT runner so it doesn't tick while pooled
+            var runner = GetComponent<BehaviorTreeRunner>();
+            if (runner != null)
+            {
+                runner.enabled = false;
             }
             pool.ReturnToPool(this);
         }
@@ -80,6 +123,7 @@ public class NPCController : MonoBehaviour
     public bool HasArrived(NavMeshAgent nav, float arrivalThreshold)
     {
         if (nav == null) return false;
+        if (!nav.enabled || !nav.isOnNavMesh) return false;
         if (!nav.pathPending && nav.remainingDistance <= arrivalThreshold)
         {
             return true;

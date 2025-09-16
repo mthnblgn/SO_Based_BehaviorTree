@@ -123,8 +123,6 @@ public class BehaviorTreeEditor : Editor
         EditorGUILayout.BeginHorizontal();
         GUILayout.Space(level * kIndent);
 
-        var prevColor = GUI.color;
-        GUI.color = GetStateColor(node.currentState);
 
     // Get row rect
         Rect nodeRect = EditorGUILayout.GetControlRect();
@@ -145,7 +143,6 @@ public class BehaviorTreeEditor : Editor
     // Drag events: allow starting drag even for root (parent null)
         HandleDragEvents(node, parent, childIndex, nodeRect);
 
-        GUI.color = prevColor;
 
     // Quick controls
         DrawNodeControls(node, parent, childIndex);
@@ -424,18 +421,7 @@ public class BehaviorTreeEditor : Editor
         return content;
     }
 
-    private Color GetStateColor(Node.NodeState state)
-    {
-        if (!Application.isPlaying) return Color.white;
 
-        switch (state)
-        {
-            case Node.NodeState.RUNNING: return Color.yellow;
-            case Node.NodeState.SUCCESS: return Color.green;
-            case Node.NodeState.FAILURE: return Color.red;
-            default: return Color.grey;
-        }
-    }
 
     private void DrawDropIndicator()
     {
