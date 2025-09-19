@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 0
   description: 
-  arrivalThreshold: 0.25
+  arrivalThreshold: 0.4
   edgeBackOffset: 0.15
   pushForce: 3.5
   upKick: 0.5
