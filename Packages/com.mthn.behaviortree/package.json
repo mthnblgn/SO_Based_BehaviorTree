@@ -1,0 +1,22 @@
+{
+  "name": "com.mthn.behaviortree",
+  "displayName": "Behavior Tree (ScriptableObject)",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "Lightweight ScriptableObject-based Behavior Tree framework with per-agent runtime cloning and sample queue system.",
+  "author": {
+    "name": "mthnblgn",
+    "url": "https://github.com/mthnblgn"
+  },
+  "license": "MIT",
+  "documentationUrl": "https://github.com/mthnblgn/SO_Based_BehaviorTree",
+  "changelogUrl": "https://github.com/mthnblgn/SO_Based_BehaviorTree/releases",
+  "keywords": ["ai", "behavior-tree", "scriptableobject", "unity"],
+  "samples": [
+    {
+      "displayName": "Queue System Sample",
+      "description": "NPC queue + waiting spot domain with movement action nodes.",
+      "path": "Samples~/QueueSystem"
+    }
+  ]
+}
