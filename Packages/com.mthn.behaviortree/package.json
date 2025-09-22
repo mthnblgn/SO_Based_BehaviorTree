@@ -9,6 +9,11 @@
     "url": "https://github.com/mthnblgn"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mthnblgn/SO_Based_BehaviorTree.git",
+    "directory": "Packages/com.mthn.behaviortree"
+  },
   "documentationUrl": "https://github.com/mthnblgn/SO_Based_BehaviorTree",
   "changelogUrl": "https://github.com/mthnblgn/SO_Based_BehaviorTree/releases",
   "keywords": ["ai", "behavior-tree", "scriptableobject", "unity"],
