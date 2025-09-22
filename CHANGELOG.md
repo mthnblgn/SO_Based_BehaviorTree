@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.4] - 2025-09-22
+### Added
+- NavMesh related sample adjustments (prepare ground / waiting area so scene works with minimal manual bake steps).
+- (If included) Prefab or data ensuring sample queue area is ready on import.
+### Changed
+- README install link updated to v0.1.4.
+
+## [0.1.3] - 2025-09-22
+### Removed
+- Duplicate scripts cleaned from package.
+
 ## [0.1.2] - 2025-09-22
 ### Fixed
 - Prefab references and missing sample prefab issues corrected (ensured sample scene opens without missing scripts/prefabs).
