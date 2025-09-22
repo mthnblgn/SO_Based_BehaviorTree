@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: cf93f086a1bc1024f8949fa514ac35e8, type: 2}
+    - target: {fileID: 3077005105113970869, guid: 3904835b8997c644e8e05cebc1c0b134, type: 3}
+      propertyPath: m_AgentTypeID
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3699563085985160830, guid: 3904835b8997c644e8e05cebc1c0b134, type: 3}
       propertyPath: m_Name
       value: NPC Suicidal
