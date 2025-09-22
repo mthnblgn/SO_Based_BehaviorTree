@@ -67,10 +67,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-# Local imported UPM samples (do not commit copies imported into Assets/Samples)
-/Assets/Samples/
-/Assets/Samples.meta
-
 # Packed Addressables
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
