@@ -13,6 +13,13 @@ Minimal ScriptableObject-based Behavior Tree for Unity. Per-agent deep cloning, 
 * Simple lifecycle: OnStart / OnUpdate / OnStop / Abort
 * Queue System Sample (domain kept out of core)
 
+![dragdropgif](https://github.com/user-attachments/assets/a96d079d-dcb7-4ec6-9b41-e96b20cb9794)
+</br>
+![ezgif-5d004301bbb866](https://github.com/user-attachments/assets/e06acb32-2d0f-41da-86fb-db575a63f46a)
+
+
+
+
 ## Installation (UPM)
 Package Manager > Add package from git URL:
 
