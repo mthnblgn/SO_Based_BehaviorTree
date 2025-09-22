@@ -16,7 +16,7 @@ Minimal ScriptableObject-based Behavior Tree for Unity. Per-agent deep cloning, 
 ## Installation (UPM)
 Package Manager > Add package from git URL:
 ```
-https://github.com/mthnblgn/SO_Based_BehaviorTree.git?path=Packages/com.mthn.behaviortree#v0.1.1
+https://github.com/mthnblgn/SO_Based_BehaviorTree.git?path=Packages/com.mthn.behaviortree#v0.1.2
 ```
 Sample: select the package > Samples > Queue System Sample > Import
 
@@ -53,4 +53,6 @@ Issues / PRs welcome. Please keep things lightweight and focused.
 
 ---
 Kept intentionally concise. See commit history for deeper details.
+
+Note: package.json "unity": "2022.3" denotes the minimum supported LTS baseline; tested also on 6000.x.
 

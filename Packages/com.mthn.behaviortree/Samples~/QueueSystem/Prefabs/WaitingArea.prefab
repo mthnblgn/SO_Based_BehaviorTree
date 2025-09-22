@@ -49,11 +49,13 @@ MonoBehaviour:
   - {fileID: 3093686397290895359, guid: 05af0a7e67d22124093a3fb853d2472f, type: 3}
   - {fileID: 6267775862821432388, guid: 32e15f4a5db6e4043b593498dc33d5f8, type: 3}
   - {fileID: 6423982022010636590, guid: 3904835b8997c644e8e05cebc1c0b134, type: 3}
+  - {fileID: 7540319967028125423, guid: 31dae1e564f33684aa79935e5c0f4abf, type: 3}
   area: {fileID: 1724630293164061914}
   spawnPoints:
   - {fileID: 5922026260314560312}
   initialPoolSize: 5
   spawnAtQueue: 0
+  spawnTime: 0.5
 --- !u!1 &868566101764251134
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,7 +202,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.083333336
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 6c9cb112124ae974d8b951f38157bcdf, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: dde5ed40efa83b049a7ab0f6e224b286, type: 2}
   m_BuildHeightMesh: 0
 --- !u!114 &1724630293164061914
 MonoBehaviour:
@@ -220,6 +222,7 @@ MonoBehaviour:
   queueSpacing: 1
   queueDirection: {x: -1, y: 0, z: 0}
   queueCooldown: 0.5
+  queueLimit: 15
   exitAnchor: {fileID: 4378079814180159727}
 --- !u!1 &2053635954271864536
 GameObject:
@@ -246,7 +249,7 @@ Transform:
   m_GameObject: {fileID: 2053635954271864536}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14, y: 0, z: -2}
+  m_LocalPosition: {x: -14, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -311,8 +314,8 @@ Transform:
   m_GameObject: {fileID: 6062293151096806477}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: 0, z: -3}
-  m_LocalScale: {x: 1, y: 1, z: 0.4}
+  m_LocalPosition: {x: -10, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4008051359570339389}
