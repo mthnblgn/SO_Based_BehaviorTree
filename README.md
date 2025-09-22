@@ -2,175 +2,191 @@
 
 # SO Based Behavior Tree
 
-Lightweight, ScriptableObject-driven Behavior Tree framework for Unity (tested on Unity 6000.x) with per-agent runtime cloning, queue/spot reservation sample, and safe NavMesh movement actions.
+Lightweight, ScriptableObject-driven Behavior Tree framework for Unity (tested on Unity 6000.x) with per-agent runtime cloning, queue/spot reservation sample, optional basic game UI sample, and safe NavMesh movement actions.
 
 </div>
 
 ## ✨ Features
 
 - ScriptableObject nodes (easy authoring & reusability)
-- Automatic deep clone per agent at runtime (no shared mutable node state)
-- Core composites: Sequence, Selector, Parallel (if included in project), DeadlineSequence (time-bounded sequence)
-- Clean node lifecycle: OnStart / OnUpdate / OnStop + Abort handling
-- Safety: running children aborted on composite stop to avoid leaked state
-- Sample domain: NPC queue & waiting spot reservation system
-- NavMesh-safe movement actions (warp on missing mesh, re-sync destination)
-- Object pooling friendly (tree runtime rebuilt on enable if needed)
-- Minimal, dependency-free C# (only UnityEngine / NavMesh)
+- Automatic deep clone per agent (no shared mutable node state)
+- Core composites: Sequence, Selector, Parallel (if added), DeadlineSequence (time-bounded)
+- Clean lifecycle: OnStart / OnUpdate / OnStop + explicit Abort
+- Safe: running children aborted when composites stop
+- Samples: Queue system domain + minimal Game (pause/start/quit)
+- NavMesh-friendly movement actions (handles missing mesh + resync)
+- Pool friendly (rebuilds runtime graph on enable)
+- Dependency-light (UnityEngine only)
 
-## 🧱 Repository Layout
+## 🧱 Package Layout
 
 ```
-Assets/
-	Scripts/
-		BehaviorTreeRunner.cs        # MonoBehaviour host that clones & ticks a tree
-		BehaviourTree/               # Core behaviour tree implementation
-			Base/
-				Node.cs                  # Base + CompositeNode
-				CompositeNodes/          # Sequence, Selector, etc.
-			SampleNodes/               # Example action nodes (movement, queue logic)
-		NPCController.cs             # Example agent controller
-		NPCSpawner.cs                # Example pooled spawning
-		AreaController.cs            # Queue / spot management
+Packages/com.mthn.behaviortree/
+	package.json
+	Runtime/
+		BehaviorTreeRunner.cs
+		Base/Node.cs
+		Base/CompositeNodes/ (Sequence, Selector, Parallel, DeadlineSequence)
+		Templates/TemplateActionNode.cs
+	Editor/ (placeholder for future tooling)
+	Samples~/
+		QueueSystem/
+			Domain/AreaController.cs
+			NPC/NPCController.cs, NPCSpawner.cs
+			BehaviorTreeNodes/... (FindWaitingSpot, MoveToQueuePosition, etc.)
+			(optional) Scenes/
+		Game/
+			GameManager.cs
+			Scenes
 ```
 
-## 🚀 Quick Start
+Imported samples are copied under `Assets/Samples/Behavior Tree (ScriptableObject)/<version>/...` so you can modify them safely.
 
-1. Create a new Behavior Tree asset (ScriptableObject) with a root composite (e.g., Sequence).
-2. Add child nodes (drag ScriptableObject node assets into children list of composites).
-3. Add a `BehaviorTreeRunner` to your NPC prefab and assign the tree.
-4. Add required components (e.g., `NavMeshAgent`, `NPCController`).
-5. Enter Play. The runner clones the tree so each NPC has isolated node instances.
+## 🚀 Quick Start (Core)
+
+1. Create a Behavior Tree ScriptableObject (root = Sequence/Selector etc.).
+2. Create node assets and wire them as children.
+3. Put `BehaviorTreeRunner` on an agent prefab; assign the tree asset.
+4. Add required components (e.g. `NavMeshAgent`).
+5. Play: each prefab instance gets its own deep-cloned node graph.
 
 ### Creating a Node
 
-Use `[CreateAssetMenu(menuName = "Behavior Tree/Action/My Action")]` and inherit from `Node` or a custom base (e.g., `NPCActionNode` used in samples). Implement:
-
+```csharp
+[CreateAssetMenu(menuName = "Behavior Tree/Action/My Action")]
+public class MyAction : ActionNode {
+		protected override void OnStart(GameObject agent) { }
+		protected override NodeState OnUpdate(GameObject agent) { return NodeState.SUCCESS; }
+		protected override void OnStop(GameObject agent) { }
+}
 ```
-protected override void OnStart(GameObject agent) { /* one-time init */ }
-protected override NodeState OnUpdate(GameObject agent) { /* return RUNNING/SUCCESS/FAILURE */ }
-protected override void OnStop(GameObject agent) { /* cleanup */ }
-```
 
-Return semantics:
-- `RUNNING`: Will be ticked again next frame
-- `SUCCESS` / `FAILURE`: Node finalizes; `OnStop` is invoked and state resets
+Return values:
+- RUNNING: tick again next frame
+- SUCCESS / FAILURE: lifecycle ends → OnStop then node resets `started`
 
-## 🔄 Lifecycle & State Model
+## 🔄 Lifecycle & State
 
-Each node tracks:
-- `started` (internal guard to call `OnStart` exactly once per run)
-- `LastState` (most recent returned state)
+`Evaluate()` flow:
+1. First tick → set `started` + `OnStart()`
+2. Call `OnUpdate()` → capture result in `LastState`
+3. If terminal → `OnStop()` + clear `started`
 
-Evaluation flow (`Node.Evaluate`):
-1. If not started → set started + call `OnStart`.
-2. Call `OnUpdate` → get `NodeState` result.
-3. Record result into `LastState`.
-4. If terminal (SUCCESS/FAILURE) → call `OnStop` and clear `started`.
+Abort path: `Abort()` forces a final `OnStop()` and sets `LastState` (simplified cancellation). Composites abort running children they are leaving.
 
-Aborting: Composites call `Abort` on running children when they themselves stop. `Abort` forces `OnStop` + sets `LastState` to `FAILURE` (configurable pattern—keeps semantics simple).
+Why deep clone? Avoid shared mutable fields on ScriptableObjects (separate per-agent counters, indices, timers) with zero bookkeeping dictionaries.
 
-Why clone? ScriptableObjects are assets (shared). Cloning avoids:
-- Cross-agent state bleeding
-- Manual per-agent dictionaries
-- Threading concerns (future jobification)
+## 🧩 Composites & Time Limits
 
-## 🧩 Composites
+Sequence / Selector: Classic semantics.
 
-Sequence:
-- Runs children in order.
-- Stops on first FAILURE (returns FAILURE).
-- Returns RUNNING if a child is RUNNING.
-- Returns SUCCESS if all succeed.
+DeadlineSequence:
+- Runs like a Sequence but enforces a time budget.
+- On timeout returns FAILURE and resets internal index.
 
-Selector:
-- Tries children until one SUCCESS.
-- Returns SUCCESS immediately on success.
-- Returns RUNNING if current child RUNNING.
-- Returns FAILURE if all fail.
+Parallel: (If included) implement your preferred success policy.
 
-DeadlineSequence (sample specialized composite):
-- Time-bounded variant that fails if allotted duration exceeded.
-
-Parallel (if present in repo):
-- Typical patterns: succeed-on-all or succeed-on-one (policy). (Adjust README if policies added.)
-
-All composites abort RUNNING children in `OnStop` to ensure clean handover when the branch is left.
+All composites call `Abort` on RUNNING children when they themselves stop to prevent dangling state.
 
 ## 🏃‍♂️ BehaviorTreeRunner
 
-Responsibilities:
-- Validates assigned tree & root
-- Deep clones node graph (maintains identity map)
-- Ticks root every `Update()`
-- Cleans up runtime clones on disable/destroy
+- Validates & deep clones tree on Awake/OnEnable
+- Maintains original→clone map so child references stay intact
+- Ticks root each Update
+- Safe when pooled (recreates missing runtime clone on enable)
 
-Pool Friendly: If coming from a pool (Awake not called again) `OnEnable` ensures the runtime clone exists.
+## 👥 Samples
 
-## 👥 Sample Domain: Queue & Waiting Spots
+1. Queue System Sample
+	 - Reservation of waiting spots, queue ordering, timed leaving behavior (uses plain `DeadlineSequence`).
+2. Game Setup Sample
+	 - Minimal `GameManager` (space to start, escape to pause/quit) + UI panel logic.
+	 - Pure convenience; not required for BT.
 
-Included action nodes demonstrate how to layer game logic atop the BT:
-- Finding / Reserving waiting spots
-- Moving to a spot (NavMeshAgent integration, arrival checks)
-- Occupying / Releasing spots
-- Queue progression & leaving action
+### Queue Domain Details
 
-`AreaController` manages available spots & queue limit; defensive checks prevent over-enqueue.
+`AreaController` manages spots, enqueue/dequeue, cooldown gating, exit position fallback.
+`NPCActionNode` (sample) narrows `ActionNode` for convenience helpers without polluting the runtime API.
 
 ## 🧪 Extending
 
-Add a new composite: inherit `CompositeNode`, manage `children`, implement `OnUpdate` and optionally override `OnStop` (call `base.OnStop` first to abort running children). Keep any per-run counters/indices as fields; cloning makes them per-agent.
+- New Composite: inherit `CompositeNode`, manage children iteration state.
+- Decorator (future): wrap child, forward lifecycle, transform result.
+- Add debug overlays by reading each node's `LastState`.
 
-Add a decorator (future idea): create a node that wraps a single child and intercepts lifecycle.
+## ⚠️ Design Notes
 
-## ⚠️ Design Considerations
+- Single explicit `LastState` simplifies reasoning.
+- Domain kept out of Runtime (no queue/game logic references in core).
+- DeadlineSequence kept minimal (no domain callbacks) to stay generic.
+- Defensive null & fallback behaviors (NavMesh, exit position, queue limit).
 
-- State Simplicity: Only `LastState` tracked (no parallel `currentState`).
-- Isolation: Runtime cloning removes need for thread locks or per-agent dictionaries.
-- Safety: Null & pooling guards (Spawner, Area exit fallback, NavMesh sampling).
-- Abort Semantics: Children get a final `OnStop`; adjust `Abort` behavior if you need distinct cancellation code paths.
+## 🔧 Installation (UPM)
 
-## 📈 Future Ideas / Roadmap
+Option A (Git URL): Package Manager → Add package from git URL…
+```
+https://github.com/mthnblgn/SO_Based_BehaviorTree.git?path=Packages/com.mthn.behaviortree#v0.1.2
+```
+Or track a branch instead of a tag (not deterministic):
+```
+https://github.com/mthnblgn/SO_Based_BehaviorTree.git?path=Packages/com.mthn.behaviortree#refactor/upm-package
+```
+Use a version tag (recommended) for reproducible installs.
 
-- Decorator node support (Inverter, Succeeder, Repeater)
-- Visual editor (graph view) tooling
-- Runtime tree debugging overlay (node color states)
+Quick steps:
+1. Window > Package Manager
+2. + (Add) > Add package from git URL…
+3. Yapıştır & Add
+4. (İsteğe bağlı) Samples bölümünden örnekleri Import et
 
-## 🔧 Installation
+Option B (Embedded Local): Clone repo; keep `Packages/com.mthn.behaviortree` inside project root.
 
-Option A: Copy the `BehaviourTree` folder (and helper scripts you need) into your project.
+Option C (Manual Copy): Copy `Runtime/` into `Assets/` (not recommended—harder updates).
 
-Option B: Create a Unity package (UPM) by moving these scripts under `Packages/YourCompany.BehaviorTree/` and adding a `package.json`.
+### Importing Samples
+1. Open Package Manager → select “Behavior Tree (ScriptableObject)”.
+2. In Samples section click Import for:
+	 - Queue System Sample
+	 - Game Setup Sample
+3. Open imported scenes or wire provided prefabs.
+4. Modify freely (they are copies under `Assets/Samples/...`).
 
 ## ▶️ Minimal Usage Example
 
-```
+```csharp
 public class PlayOnAwake : MonoBehaviour {
-		public BehaviorTreeRunner runner; // assign in Inspector
+		public BehaviorTreeRunner runner;
 		void Start() {
-				// Tree auto-ticks via BehaviorTreeRunner.Update
+				// Runner auto ticks assigned tree
 		}
 }
 ```
 
 ## 🐞 Debugging Tips
 
-- Add `Debug.Log` in `OnStart` to verify node order during authoring.
-- Use `LastState` to render a simple in-scene gizmo / label.
-- If an agent stalls: check NavMesh availability (SamplePosition) and that a child node returns RUNNING (not silently failing every frame).
+- Log in `OnStart` for execution trace.
+- Color-code Gizmos by `LastState` (SUCCESS=green, FAILURE=red, RUNNING=yellow).
+- If stuck RUNNING forever: check child returning RUNNING and terminal conditions.
+- Validate NavMeshAgent has a valid path (sample movement node does warp fallback).
+
+## 📈 Roadmap
+
+- Decorators (Inverter / Repeater / Succeeder)
+- Graph editor (Unity UI Toolkit)
+- Live inspector window (node state tree)
 
 ## 📜 License
 
-Released under the MIT License (see `LICENSE`).
+MIT (see `LICENSE`).
 
 ## 🙌 Contributing
 
-Issues and pull requests welcome. Please keep additions dependency-light.
+Issues & PRs welcome. Keep it lightweight; propose large features before implementing.
 
 ## ❤️ Acknowledgements
 
-Inspired by common Behavior Tree patterns and Unity community examples; adapted for ScriptableObject-driven authoring with per-agent cloning.
+Inspired by standard BT literature & community patterns; adapted for ScriptableObject asset workflows + per-agent cloning.
 
 ---
-If you use this in a project, a star on GitHub is appreciated!
+If this helps you ship something, a GitHub star is appreciated.
 

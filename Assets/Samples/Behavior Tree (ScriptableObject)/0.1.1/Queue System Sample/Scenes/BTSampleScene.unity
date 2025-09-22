@@ -1917,10 +1917,6 @@ PrefabInstance:
       value: WaitingArea
       objectReference: {fileID: 0}
     - target: {fileID: 1138021112296630822, guid: 163566a19031247478496bd734b975c3, type: 3}
-      propertyPath: area
-      value: 
-      objectReference: {fileID: 8077212226808423349}
-    - target: {fileID: 1138021112296630822, guid: 163566a19031247478496bd734b975c3, type: 3}
       propertyPath: spawnTime
       value: 0.4
       objectReference: {fileID: 0}
@@ -2049,17 +2045,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 163566a19031247478496bd734b975c3, type: 3}
---- !u!114 &8077212226808423349 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1724630293164061914, guid: 163566a19031247478496bd734b975c3, type: 3}
-  m_PrefabInstance: {fileID: 8077212226808423348}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 237a30c6fb4d6af4497d9f0b8e1eb088, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
