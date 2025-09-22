@@ -1,0 +1,48 @@
+[1mdiff --git a/CHANGELOG.md b/CHANGELOG.md[m
+[1mindex 30ee2c5..6be4609 100644[m
+[1m--- a/CHANGELOG.md[m
+[1m+++ b/CHANGELOG.md[m
+[36m@@ -2,6 +2,17 @@[m
+ [m
+ All notable changes to this project will be documented in this file.[m
+ [m
+[32m+[m[32m## [0.1.4] - 2025-09-22[m
+[32m+[m[32m### Added[m
+[32m+[m[32m- NavMesh related sample adjustments (prepare ground / waiting area so scene works with minimal manual bake steps).[m
+[32m+[m[32m- (If included) Prefab or data ensuring sample queue area is ready on import.[m
+[32m+[m[32m### Changed[m
+[32m+[m[32m- README install link updated to v0.1.4.[m
+[32m+[m
+[32m+[m[32m## [0.1.3] - 2025-09-22[m
+[32m+[m[32m### Removed[m
+[32m+[m[32m- Duplicate scripts cleaned from package.[m
+[32m+[m
+ ## [0.1.2] - 2025-09-22[m
+ ### Fixed[m
+ - Prefab references and missing sample prefab issues corrected (ensured sample scene opens without missing scripts/prefabs).[m
+[1mdiff --git a/Packages/com.mthn.behaviortree/package.json b/Packages/com.mthn.behaviortree/package.json[m
+[1mindex 1e98268..0ee3e4c 100644[m
+[1m--- a/Packages/com.mthn.behaviortree/package.json[m
+[1m+++ b/Packages/com.mthn.behaviortree/package.json[m
+[36m@@ -1,7 +1,7 @@[m
+ {[m
+   "name": "com.mthn.behaviortree",[m
+   "displayName": "Behavior Tree (ScriptableObject)",[m
+[31m-  "version": "0.1.2",[m
+[32m+[m[32m  "version": "0.1.4",[m
+   "unity": "2022.3",[m
+   "description": "Lightweight ScriptableObject-based Behavior Tree framework with per-agent runtime cloning and sample queue system.",[m
+   "author": {[m
+[1mdiff --git a/README.md b/README.md[m
+[1mindex 6e9b91a..3ba4c93 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -16,7 +16,7 @@[m [mMinimal ScriptableObject-based Behavior Tree for Unity. Per-agent deep cloning,[m
+ ## Installation (UPM)[m
+ Package Manager > Add package from git URL:[m
+ ```[m
+[31m-https://github.com/mthnblgn/SO_Based_BehaviorTree.git?path=Packages/com.mthn.behaviortree#v0.1.3[m
+[32m+[m[32mhttps://github.com/mthnblgn/SO_Based_BehaviorTree.git?path=Packages/com.mthn.behaviortree#v0.1.4[m
+ ```[m
+ Sample: select the package > Samples > Queue System Sample > Import[m
+ [m
